@@ -23,12 +23,14 @@ if width != 256 and height != 256:
   print 'The file "' + sys.argv[1] + '" does not have dimensions of 256 * 256.'
   sys.exit(1)
 
+#Read data
 allPixels = []
 for x in range(width):
     for y in range(height):
         cpixel = pixels[x, y]
         allPixels.append(cpixel)
 
+#Convert data
 mapGrid = []
 for i in range(len(allPixels)):
     if allPixels[i][0] < 128:
@@ -38,15 +40,24 @@ for i in range(len(allPixels)):
       mapGrid.append(0)
       continue
 
-x = 0
-y = 0
-mapString = "#include <array>\nstd::array<int, "+str(len(mapGrid))+"> mapGrid = {"
+#Reshuffle data
+shuffleGrid = []
+currentSection = 0
+for secX in range(32):
+  for secY in range(32):
+    for x in range(8):
+      for y in range(8):
+        shuffleGrid.append(mapGrid[y * 256 + secY * 256 * 8 + x + secX * 8])
+
+
+#Put data into map.h
+secNo = 0
+mapString = "#include <array>\nstd::array<int, "+str(len(shuffleGrid))+"> mapGrid = {"
 for i in range(len(allPixels)):
-  x = i % width
-  if (i != 0 and x == 0):
-    y += 1
+  secNo = i % 64
+  if (i != 0 and secNo == 0):
     mapString += '\n'
-  mapString += str(mapGrid[i])
+  mapString += str(shuffleGrid[i])
   if (i != len(allPixels)):
     mapString += ", "
 mapString += "\n};"

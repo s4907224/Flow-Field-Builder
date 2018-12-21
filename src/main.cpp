@@ -12,13 +12,14 @@
 #include <unistd.h>
 #include <glm/vec2.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include "../include/map.h"
 
 bool done = false;
 bool running = false;
 int mapsDone = 0;
 int totalMaps = 0;
 bool etaDirty = false;
-enum directionEnum {d0 = 9, dN = 1, dNE = 2, dE = 3, dSE = 4, dS = 5, dSW = 6, dW = 7, dNW = 8, dNone = 0};
+enum directionEnum {d0 = 9, dN = 1, dNE = 2, dE = 3, dSE = 4, dS = 5, dSW = 6, dW = 7, dNW = 8, dNone = 0, dNoRoute = 10};
 
 
 void spin()
@@ -165,24 +166,29 @@ float vectorLength(glm::vec2 a)
   return dist;
 }
 
-std::vector<node> dijkstra(int sourceX, int sourceY)
+std::vector<node> dijkstra(int sectionNo, int sourceX, int sourceY)
 {
   running = true;
   auto t1 = std::chrono::high_resolution_clock::now();
+  int sectionOffset = sectionNo * 64;
   std::vector<node> vecNodes;
   int numUnvisitedNodes = 8 * 8;
-  for (int y = 0; y < 8; y++)
+
+  int y = 0;
+  int x = 0;
+  for (int i = sectionNo * 64; i < sectionNo * 64 + 64; i++)
   {
-    for (int x = 0; x < 8; x++)
-    {
-      node n;
-      n.loc.x = x;
-      n.loc.y = y;
-      if (!(x > 2 && x < 7 && (y == 3 || y == 5))) {n.unvisited = true;}
-      else                         {n.unvisited = false; n.enabled = false; numUnvisitedNodes--;}
-      vecNodes.push_back(n);
-    }
+    x = i % 8;
+    if (i != 0 && x == 0) {y++;}
+    node n;
+    n.loc.x = x;
+    n.loc.y = y;
+    if(mapGrid[i] != 1) {n.unvisited = true;}
+    else                         {n.unvisited = false; n.enabled = false; numUnvisitedNodes--;}
+    vecNodes.push_back(n);
   }
+
+
   for (size_t i = 0; i < vecNodes.size(); i++)
   {
     static int y = 0;
@@ -263,14 +269,14 @@ std::vector<node> dijkstra(int sourceX, int sourceY)
   float deltaCalc = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
 }
 
-std::array<std::vector<node>, 64> calculateMap()
+std::array<std::vector<node>, 64> calculateMap(int sectionNo)
 {
   std::array<std::vector<node>, 64> allNodes;
   for (int i = 0; i < 8; i++)
   {
     for (int j = 0; j < 8; j++)
     {
-      allNodes[j * 8 + i] = dijkstra(i, j);
+      allNodes[j * 8 + i] = dijkstra(sectionNo, i, j);
       mapsDone++;
       etaDirty = true;
     }
@@ -289,9 +295,13 @@ flowStorage::singleFlow generateFlow(std::vector<node> nodes, int goalX, int goa
     int dY;
     x = i % 8;
     if (i != 0 && x == 0) {y++;}
-    if (nodes[i].enabled == false)
+    if (nodes[i].enabled == false || nodes[i].flowNbrs.size() == 0)
     {
       flow[i] = dNone;
+    }
+    else if (nodes[i].dist == INT_MAX)
+    {
+      flow[i] = dNoRoute;
     }
     else
     {
@@ -326,12 +336,12 @@ flowStorage::singleFlow generateFlow(std::vector<node> nodes, int goalX, int goa
               flow[i] = d0;
               break;
             }
-            case 1:
+            case -1:
             {
               flow[i] = dN;
               break;
             }
-            case -1:
+            case 1:
             {
               flow[i] = dS;
               break;
@@ -348,12 +358,12 @@ flowStorage::singleFlow generateFlow(std::vector<node> nodes, int goalX, int goa
               flow[i] = dE;
               break;
             }
-            case 1:
+            case -1:
             {
               flow[i] = dNE;
               break;
             }
-            case -1:
+            case 1:
             {
               flow[i] = dSE;
               break;
@@ -370,12 +380,12 @@ flowStorage::singleFlow generateFlow(std::vector<node> nodes, int goalX, int goa
               flow[i] = dW;
               break;
             }
-            case 1:
+            case -1:
             {
               flow[i] = dNW;
               break;
             }
-            case -1:
+            case 1:
             {
               flow[i] = dSW;
               break;
@@ -396,12 +406,12 @@ void printFlows()
     for (int flowInSection = 0; flowInSection < 64; flowInSection++)
     {
       int x = 0;
-      int y = 7;
+      int y = 0;
       std::cout<<"Section = "<<section + 1<<", flowNo: "<<flowInSection + 1<<'\n';
       for (int tileInFlow = 0; tileInFlow < 64; tileInFlow++)
       {
         x = tileInFlow % 8;
-        if (tileInFlow != 0 && x == 0) {y--; std::cout<<"\n\n";}
+        if (tileInFlow != 0 && x == 0) {y++; std::cout<<"\n\n";}
         std::string arrow;
         switch (flows.allFlows[section][flowInSection][y * 8 + x])
         {
@@ -447,12 +457,17 @@ void printFlows()
           }
           case d0:
           {
-            arrow = "X";
+            arrow = "\033[1;32mX\033[0m";
             break;
           }
           case dNone:
           {
-            arrow = "#";
+            arrow = "\033[1;31m#\033[0m";
+            break;
+          }
+          case dNoRoute:
+          {
+            arrow = "\033[1;33m0\033[0m";
             break;
           }
         }
@@ -467,7 +482,7 @@ void run()
 {
   totalMaps = 8 * 8 * 1024;
   std::array<std::array<std::vector<node>, 64>, 1024> nodeSet;
-  for (int i = 0; i < 1024; i++) {nodeSet[i] = calculateMap();}
+  for (int i = 0; i < 1024; i++) {nodeSet[i] = calculateMap(i);}
   done = true;
   for (int section = 0; section < 1024; section++)
   {
@@ -496,4 +511,15 @@ int main(int argc, char **argv)
   auto t2 = std::chrono::high_resolution_clock::now();
   float delta = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
   std::cout<<std::setprecision(10)<<"Time taken: "<<delta / 1000.f<<'\n';
+
+  // int secX = 0;
+  // int secY = 0;
+  // for (int i = 0; i < 1024; i++)
+  // {
+  //   for (int j = i * 64; j < i * 64 + 64; j++)
+  //   {
+  //     if (j % 8 == 0) {std::cout<<'\n';}
+  //     std::cout<<mapGrid[j]<<' ';
+  //   }
+  // }
 }
