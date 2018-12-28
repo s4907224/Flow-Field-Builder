@@ -411,7 +411,7 @@ void printFlows()
       for (int tileInFlow = 0; tileInFlow < 64; tileInFlow++)
       {
         x = tileInFlow % 8;
-        if (tileInFlow != 0 && x == 0) {y++; std::cout<<"\n\n";}
+        if (tileInFlow != 0 && x == 0) {y++; std::cout<<"\n";}
         std::string arrow;
         switch (flows.allFlows[section][flowInSection][y * 8 + x])
         {
@@ -471,14 +471,14 @@ void printFlows()
             break;
           }
         }
-        std::cout<<arrow<<"   ";
+        std::cout<<arrow<<' ';
       }
       std::cout<<"\n";
     }
   }
 }
 
-void run()
+void run(bool printFlag)
 {
   totalMaps = 8 * 8 * 1024;
   std::array<std::array<std::vector<node>, 64>, 1024> nodeSet;
@@ -498,28 +498,17 @@ void run()
     }
     flows.allFlows.push_back(flows.currentSectionFlow);
   }
-  printFlows();
+  if(printFlag) {printFlows();}
 }
 
 int main(int argc, char **argv)
 {
   std::thread a (spin);
   auto t1 = std::chrono::high_resolution_clock::now();
-  std::thread b (run);
+  std::thread b (run, bool(atoi(argv[1])));
   a.join();
   b.join();
   auto t2 = std::chrono::high_resolution_clock::now();
   float delta = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
   std::cout<<std::setprecision(10)<<"Time taken: "<<delta / 1000.f<<'\n';
-
-  // int secX = 0;
-  // int secY = 0;
-  // for (int i = 0; i < 1024; i++)
-  // {
-  //   for (int j = i * 64; j < i * 64 + 64; j++)
-  //   {
-  //     if (j % 8 == 0) {std::cout<<'\n';}
-  //     std::cout<<mapGrid[j]<<' ';
-  //   }
-  // }
 }

@@ -52,15 +52,15 @@ for secX in range(32):
 
 #Put data into map.h
 secNo = 0
-mapString = "#include <array>\nstd::array<int, "+str(len(shuffleGrid))+"> mapGrid = {"
+mapString = "#include <array>\nstd::array<int,"+str(len(shuffleGrid))+">mapGrid={"
 for i in range(len(allPixels)):
   secNo = i % 64
   if (i != 0 and secNo == 0):
     mapString += '\n'
   mapString += str(shuffleGrid[i])
   if (i != len(allPixels)):
-    mapString += ", "
-mapString += "\n};"
+    mapString += ","
+mapString += "};"
 
 f = open("include/map.h", "w+")
 f.write(mapString)

@@ -14,7 +14,7 @@ if [ ! -f images/CURRENT$1 ]; then
     echo "Test program compiled!";
   else 
     echo "Test program compilation resulted in error :(";
-    echo "Likely that the generated map was the wrong size."
+    echo "Likely that the map was generated incorrectly."
     exit
   fi
   echo "Testing map.h..."
@@ -37,4 +37,8 @@ else
   exit
 fi
 touch images/CURRENT$1
-./calcFlows
+if [[ $2 ]]; then
+  ./calcFlows 1
+else
+  ./calcFlows 0
+fi
