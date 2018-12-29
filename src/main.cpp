@@ -125,25 +125,14 @@ void spin()
   }
 }
 
-struct flowStorage
-{
-  typedef std::array<int, 64> singleFlow;
-  typedef std::array<singleFlow, 64> sectionFlow;
-  typedef std::vector<sectionFlow> allFlow;
-  singleFlow currentFlow;
-  sectionFlow currentSectionFlow;
-  allFlow allFlows;
-};
-
 struct node
 {
   bool unvisited = true;
   bool enabled = true;
-  bool isRoute = false;
-  glm::vec2 loc;
+  glm::ivec2 loc;
   int locX() const;
   int locY() const;
-  float dist = INT_MAX;
+  float dist = FLT_MAX;
   std::vector<node*> nbrs;
   std::vector<node*> flowNbrs;
 };
@@ -158,7 +147,40 @@ int node::locY() const
   return int(loc.y);
 }
 
-flowStorage flows;
+struct gridPathStorage
+{
+  typedef std::array<int, 64> singleFlow;
+  typedef std::array<singleFlow, 64> sectionFlow;
+  typedef std::vector<sectionFlow> allFlow;
+  typedef std::array<std::array<std::vector<node>, 64>, 1024> setNodes;
+  singleFlow currentFlow;
+  sectionFlow currentSectionFlow;
+  allFlow allFlows;
+  setNodes nodeSet;
+};
+
+struct junction
+{
+  glm::ivec2 nodeLocA;
+  int sectionA;
+  glm::ivec2 nodeLocB;
+  int sectionB;
+  float dist = FLT_MAX;
+  std::vector<junction*> nbrs;
+  std::vector<int> nbrsSection;
+  bool unvisited = true;
+  static int junctionID;
+  junction();
+};
+
+int junction::junctionID = 0;
+
+junction::junction()
+{
+  junctionID++;
+}
+
+gridPathStorage paths;
 
 float vectorLength(glm::vec2 a)
 {
@@ -166,10 +188,9 @@ float vectorLength(glm::vec2 a)
   return dist;
 }
 
-std::vector<node> dijkstra(int sectionNo, int sourceX, int sourceY)
+std::vector<node> dijkstraGrid(int sectionNo, int sourceX, int sourceY)
 {
   running = true;
-  auto t1 = std::chrono::high_resolution_clock::now();
   int sectionOffset = sectionNo * 64;
   std::vector<node> vecNodes;
   int numUnvisitedNodes = 8 * 8;
@@ -187,7 +208,6 @@ std::vector<node> dijkstra(int sectionNo, int sourceX, int sourceY)
     else                         {n.unvisited = false; n.enabled = false; numUnvisitedNodes--;}
     vecNodes.push_back(n);
   }
-
 
   for (size_t i = 0; i < vecNodes.size(); i++)
   {
@@ -234,9 +254,6 @@ std::vector<node> dijkstra(int sectionNo, int sourceX, int sourceY)
   int startNumRemNodes = numUnvisitedNodes;
   while (numUnvisitedNodes != 0)
   {
-    static int count = 0;
-    if (numUnvisitedNodes == startNumRemNodes) {count = 0;}
-    count++;
     int index = INT_MAX;
     for (size_t i = 0; i < vecNodes.size(); i++)
     {
@@ -264,9 +281,6 @@ std::vector<node> dijkstra(int sectionNo, int sourceX, int sourceY)
     numUnvisitedNodes--;
   }
   return vecNodes;
-
-  auto t2 = std::chrono::high_resolution_clock::now();
-  float deltaCalc = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
 }
 
 std::array<std::vector<node>, 64> calculateMap(int sectionNo)
@@ -276,7 +290,7 @@ std::array<std::vector<node>, 64> calculateMap(int sectionNo)
   {
     for (int j = 0; j < 8; j++)
     {
-      allNodes[j * 8 + i] = dijkstra(sectionNo, i, j);
+      allNodes[j * 8 + i] = dijkstraGrid(sectionNo, i, j);
       mapsDone++;
       etaDirty = true;
     }
@@ -284,9 +298,9 @@ std::array<std::vector<node>, 64> calculateMap(int sectionNo)
   return allNodes;
 }
 
-flowStorage::singleFlow generateFlow(std::vector<node> nodes, int goalX, int goalY)
+gridPathStorage::singleFlow generateFlow(std::vector<node> nodes, int goalX, int goalY)
 {
-  flowStorage::singleFlow flow;
+  gridPathStorage::singleFlow flow;
   int x = 0;
   int y = 0;
   for (int i = 0; i < 64; i++)
@@ -299,7 +313,7 @@ flowStorage::singleFlow generateFlow(std::vector<node> nodes, int goalX, int goa
     {
       flow[i] = dNone;
     }
-    else if (nodes[i].dist == INT_MAX)
+    else if (nodes[i].dist == FLT_MAX)
     {
       flow[i] = dNoRoute;
     }
@@ -413,7 +427,7 @@ void printFlows()
         x = tileInFlow % 8;
         if (tileInFlow != 0 && x == 0) {y++; std::cout<<"\n";}
         std::string arrow;
-        switch (flows.allFlows[section][flowInSection][y * 8 + x])
+        switch (paths.allFlows[section][flowInSection][y * 8 + x])
         {
           case dN:
           {
@@ -481,8 +495,8 @@ void printFlows()
 void run(bool printFlag)
 {
   totalMaps = 8 * 8 * 1024;
-  std::array<std::array<std::vector<node>, 64>, 1024> nodeSet;
-  for (int i = 0; i < 1024; i++) {nodeSet[i] = calculateMap(i);}
+  paths.nodeSet;
+  for (int i = 0; i < 1024; i++) {paths.nodeSet[i] = calculateMap(i);}
   done = true;
   for (int section = 0; section < 1024; section++)
   {
@@ -492,23 +506,112 @@ void run(bool printFlag)
     {
       x = flowInSection % 8;
       if (flowInSection != 0 && x == 0) {y++;}
-      if (nodeSet[section][flowInSection][flowInSection].enabled) {flows.currentFlow = generateFlow(nodeSet[section][flowInSection], x, y);}
-      else {flows.currentFlow = flowStorage::singleFlow();}
-      flows.currentSectionFlow[flowInSection] = flows.currentFlow;
+      if (paths.nodeSet[section][flowInSection][flowInSection].enabled) {paths.currentFlow = generateFlow(paths.nodeSet[section][flowInSection], x, y);}
+      else {paths.currentFlow = gridPathStorage::singleFlow();}
+      paths.currentSectionFlow[flowInSection] = paths.currentFlow;
     }
-    flows.allFlows.push_back(flows.currentSectionFlow);
+    paths.allFlows.push_back(paths.currentSectionFlow);
   }
   if(printFlag) {printFlows();}
 }
 
+std::array<junction, 1984> dijkstraLinker(std::array<junction, 1984> referenceJunctions, int sourceJunction)
+{
+  std::array<junction, 1984> junctions = referenceJunctions;
+  return junctions;
+}
+
+void initLinkerMapNodes()
+{
+  std::array<junction, 1984> referenceJunctions;
+  int junctionCounter = 0;
+  for (int j = 0; j < 32; j++)
+  {
+    for (int i = 0; i < 32; i++)
+    {
+      if (i != 31)
+      {
+          glm::ivec2 currentSectionCoordsRight {i * 8 + 7, j * 8 + 3};
+          junction junc;
+          junc.sectionA = i + j * 32;
+          junc.sectionB = junc.sectionA + 1;
+          junc.nodeLocA = currentSectionCoordsRight;
+          junc.nodeLocB = currentSectionCoordsRight;
+          junc.nodeLocB.x += 1;
+          referenceJunctions[junctionCounter] = junc;
+          junctionCounter++;
+      }
+      if (j != 31)
+      {
+          glm::ivec2 currentSectionCoordsTop {i * 8 + 3, j * 8 + 7};
+          junction junc;
+          junc.sectionA = i + j * 32;
+          junc.sectionB = junc.sectionA + 32;
+          junc.nodeLocA = currentSectionCoordsTop;
+          junc.nodeLocB = currentSectionCoordsTop;
+          junc.nodeLocB.y += 1;
+          referenceJunctions[junctionCounter] = junc;
+          junctionCounter++;
+      }
+    }
+  }
+
+  for (int i = 0; i < 1984; i++)
+  {
+    for (int j = 0; j < 1984; j++)
+    {
+      if (i == j) {continue;}
+      if (referenceJunctions[i].sectionA == referenceJunctions[j].sectionA ||
+          referenceJunctions[i].sectionA == referenceJunctions[j].sectionB ||
+          referenceJunctions[i].sectionB == referenceJunctions[j].sectionA ||
+          referenceJunctions[i].sectionB == referenceJunctions[j].sectionB)
+          {
+            referenceJunctions[i].nbrs.push_back(&referenceJunctions[j]);
+          }
+    }
+  }
+
+  for (size_t i = 0; i < 1984; i++)
+  {
+    std::cout<<"JUNCTION "<<i<<" WITH COORDS "<<glm::to_string(referenceJunctions[i].nodeLocA)<<" & "<<glm::to_string(referenceJunctions[i].nodeLocB)<<'\n';
+    for (size_t j = 0; j < referenceJunctions[i].nbrs.size(); j++)
+    {
+      if (referenceJunctions[i].sectionA == referenceJunctions[i].nbrs[j]->sectionA)
+      {
+        std::cout<<"START - "<<glm::to_string(referenceJunctions[i].nodeLocA)<<'\n';
+        std::cout<<"END - "<<glm::to_string(referenceJunctions[i].nbrs[j]->nodeLocA)<<'\n';
+      }
+      if (referenceJunctions[i].sectionA == referenceJunctions[i].nbrs[j]->sectionB)
+      {
+        std::cout<<"START - "<<glm::to_string(referenceJunctions[i].nodeLocA)<<'\n';
+        std::cout<<"END - "<<glm::to_string(referenceJunctions[i].nbrs[j]->nodeLocB)<<'\n';
+      }
+      if (referenceJunctions[i].sectionB == referenceJunctions[i].nbrs[j]->sectionA)
+      {
+        std::cout<<"START - "<<glm::to_string(referenceJunctions[i].nodeLocB)<<'\n';
+        std::cout<<"END - "<<glm::to_string(referenceJunctions[i].nbrs[j]->nodeLocA)<<'\n';
+      }
+      if (referenceJunctions[i].sectionB == referenceJunctions[i].nbrs[j]->sectionB)
+      {
+        std::cout<<"START - "<<glm::to_string(referenceJunctions[i].nodeLocB)<<'\n';
+        std::cout<<"END - "<<glm::to_string(referenceJunctions[i].nbrs[j]->nodeLocB)<<'\n';
+      }
+    }
+  }
+
+  std::vector<std::array<junction, 1984>> vecJunctionDijkstra;
+  //for (size_t i = 0; i < 1984; i++) {vecJunctionDijkstra.push_back(dijkstraLinker(referenceJunctions, i));}
+}
+
 int main(int argc, char **argv)
 {
-  std::thread a (spin);
-  auto t1 = std::chrono::high_resolution_clock::now();
-  std::thread b (run, bool(atoi(argv[1])));
-  a.join();
-  b.join();
-  auto t2 = std::chrono::high_resolution_clock::now();
-  float delta = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
-  std::cout<<std::setprecision(10)<<"Time taken: "<<delta / 1000.f<<'\n';
+  // std::thread a(spin);
+  // auto t1 = std::chrono::high_resolution_clock::now();
+  // std::thread b(run, bool(atoi(argv[1])));
+  // a.join();
+  // b.join();
+  // auto t2 = std::chrono::high_resolution_clock::now();
+  // float delta = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
+  // std::cout<<std::setprecision(10)<<"Time taken: "<<delta / 1000.f<<'\n';
+  initLinkerMapNodes();
 }
