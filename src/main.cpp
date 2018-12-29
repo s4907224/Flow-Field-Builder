@@ -78,49 +78,49 @@ void spinDijkstra()
       etaDirty = false;
     }
 
-    std::cout << "\rCalculating Dijkstra ⠁ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rDijkstra ⠁ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (gridDone) {std::cout<<"\nDijkstra complete.\nCrunching paths...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Dijkstra ⠂ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rDijkstra ⠂ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (gridDone) {std::cout<<"\nDijkstra complete.\nCrunching paths...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Dijkstra ⠄ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rDijkstra ⠄ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (gridDone) {std::cout<<"\nDijkstra complete.\nCrunching paths...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Dijkstra ⡀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rDijkstra ⡀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (gridDone) {std::cout<<"\nDijkstra complete.\nCrunching paths...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Dijkstra ⢀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rDijkstra ⢀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (gridDone) {std::cout<<"\nDijkstra complete.\nCrunching paths...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Dijkstra ⠠ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rDijkstra ⠠ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (gridDone) {std::cout<<"\nDijkstra complete.\nCrunching paths...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Dijkstra ⠐ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rDijkstra ⠐ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (gridDone) {std::cout<<"\nDijkstra complete.\nCrunching paths...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Dijkstra ⠈ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rDijkstra ⠈ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (gridDone) {std::cout<<"\nDijkstra complete.\nCrunching paths...\n"<<std::flush; return;}
@@ -181,49 +181,49 @@ void spinLinker()
       etaDirty = false;
     }
 
-    std::cout << "\rCalculating Linker ⠁ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rLinker ⠁ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Linker ⠂ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rLinker ⠂ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Linker ⠄ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rLinker ⠄ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Linker ⡀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rLinker ⡀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Linker ⢀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rLinker ⢀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Linker ⠠ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rLinker ⠠ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Linker ⠐ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rLinker ⠐ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rCalculating Linker ⠈ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")      "<<std::flush;
+    std::cout << "\rLinker ⠈ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
       if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
@@ -263,6 +263,7 @@ struct junction
   float dist = FLT_MAX;
   std::vector<junction*> nbrs;
   std::vector<int> nbrsSection;
+  junction* pJunc = nullptr;
   bool unvisited = true;
   static int junctionID;
   junction();
@@ -283,11 +284,13 @@ struct pathStorage
   typedef std::array<std::array<std::vector<node>, 64>, 1024> setNodes;
   typedef std::array<junction, 1984> junctionMap;
   typedef std::vector<junctionMap> linkerMap;
+  typedef std::vector<junction*> linkerChain;
   singleFlow currentFlow;
   sectionFlow currentSectionFlow;
   allFlow allFlows;
   setNodes nodeSet;
   linkerMap linker;
+  std::array<std::array<linkerChain, 1984>, 1984> linkerChains;
 };
 
 pathStorage paths;
@@ -602,7 +605,23 @@ void printFlows()
   }
 }
 
-std::array<junction, 1984> dijkstraLinker(std::array<junction, 1984> referenceJunctions, int sourceJunction)
+pathStorage::linkerChain getLinkerChain(int startJunction, int endJunction)
+{
+  pathStorage::linkerChain chain;
+  chain.push_back(&paths.linker[startJunction][endJunction]);
+  bool doneChain = false;
+  junction* pJ = paths.linker[startJunction][endJunction].pJunc;
+  while (!doneChain)
+  {
+    if (pJ == nullptr) {doneChain = true; break;}
+    chain.push_back(pJ);
+    pJ = pJ->pJunc;
+  }
+  chain.push_back(&paths.linker[startJunction][startJunction]);
+  return chain;
+}
+
+pathStorage::junctionMap dijkstraLinker(std::array<junction, 1984> referenceJunctions, int sourceJunction)
 {
   std::array<junction, 1984> junctions = referenceJunctions;
   int numUnvisitedJunctions = 1984;
@@ -690,6 +709,7 @@ std::array<junction, 1984> dijkstraLinker(std::array<junction, 1984> referenceJu
       if (alt < junctions[index].nbrs[i]->dist)
       {
         junctions[index].nbrs[i]->dist = alt;
+        junctions[index].nbrs[i]->pJunc = &junctions[index];
       }
     }
     numUnvisitedJunctions--;
@@ -710,27 +730,27 @@ void generateLinkerMap()
     {
       if (i != 31)
       {
-          glm::ivec2 currentSectionCoordsRight {i * 8 + 7, j * 8 + 3};
-          junction junc;
-          junc.sectionA = i + j * 32;
-          junc.sectionB = junc.sectionA + 1;
-          junc.nodeLocA = currentSectionCoordsRight;
-          junc.nodeLocB = currentSectionCoordsRight;
-          junc.nodeLocB.x += 1;
-          referenceJunctions[junctionCounter] = junc;
-          junctionCounter++;
+        glm::ivec2 currentSectionCoordsRight {i * 8 + 7, j * 8 + 3};
+        junction junc;
+        junc.sectionA = i + j * 32;
+        junc.sectionB = junc.sectionA + 1;
+        junc.nodeLocA = currentSectionCoordsRight;
+        junc.nodeLocB = currentSectionCoordsRight;
+        junc.nodeLocB.x += 1;
+        referenceJunctions[junctionCounter] = junc;
+        junctionCounter++;
       }
       if (j != 31)
       {
-          glm::ivec2 currentSectionCoordsTop {i * 8 + 3, j * 8 + 7};
-          junction junc;
-          junc.sectionA = i + j * 32;
-          junc.sectionB = junc.sectionA + 32;
-          junc.nodeLocA = currentSectionCoordsTop;
-          junc.nodeLocB = currentSectionCoordsTop;
-          junc.nodeLocB.y += 1;
-          referenceJunctions[junctionCounter] = junc;
-          junctionCounter++;
+        glm::ivec2 currentSectionCoordsTop {i * 8 + 3, j * 8 + 7};
+        junction junc;
+        junc.sectionA = i + j * 32;
+        junc.sectionB = junc.sectionA + 32;
+        junc.nodeLocA = currentSectionCoordsTop;
+        junc.nodeLocB = currentSectionCoordsTop;
+        junc.nodeLocB.y += 1;
+        referenceJunctions[junctionCounter] = junc;
+        junctionCounter++;
       }
     }
   }
@@ -751,6 +771,14 @@ void generateLinkerMap()
   }
 
   for (size_t i = 0; i < 1984; i++) {paths.linker.push_back(dijkstraLinker(referenceJunctions, i));}
+  for (size_t i = 0; i < 1984; i++)
+  {
+    for (size_t j = 0; j < 1984; j++)
+    {
+      if (i == j) {continue;}
+      paths.linkerChains[i][j] = getLinkerChain(i, j);
+    }
+  }
 }
 
 void run(bool printFlag)
