@@ -181,52 +181,52 @@ void spinLinker()
       etaDirty = false;
     }
 
-    std::cout << "\rLinker ⠁ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
+    std::cout << "\rLinker ⠁ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")     "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
-      if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
+      if (linkerDone) {std::cout<<"\nLinker complete.\nCrunching links...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rLinker ⠂ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
+    std::cout << "\rLinker ⠂ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")     "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
-      if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
+      if (linkerDone) {std::cout<<"\nLinker complete.\nCrunching links...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rLinker ⠄ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
+    std::cout << "\rLinker ⠄ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")     "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
-      if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
+      if (linkerDone) {std::cout<<"\nLinker complete.\nCrunching links...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rLinker ⡀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
+    std::cout << "\rLinker ⡀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")     "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
-      if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
+      if (linkerDone) {std::cout<<"\nLinker complete.\nCrunching links...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rLinker ⢀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
+    std::cout << "\rLinker ⢀ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")     "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
-      if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
+      if (linkerDone) {std::cout<<"\nLinker complete.\nCrunching links...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rLinker ⠠ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
+    std::cout << "\rLinker ⠠ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")     "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
-      if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
+      if (linkerDone) {std::cout<<"\nLinker complete.\nCrunching links...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rLinker ⠐ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
+    std::cout << "\rLinker ⠐ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")     "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
-      if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
+      if (linkerDone) {std::cout<<"\nLinker complete.\nCrunching links...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
-    std::cout << "\rLinker ⠈ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")   "<<std::flush;
+    std::cout << "\rLinker ⠈ (running for "<<std::setprecision(10)<< delta<< "s, "<<percent<<"% complete"<<std::setprecision(6)<<", time remaining: "<<tString<<")     "<<std::flush;
     for (size_t i = 0; i < 100; i++)
     {
-      if (linkerDone) {std::cout<<"\nLinker complete.\n"<<std::flush; return;}
+      if (linkerDone) {std::cout<<"\nLinker complete.\nCrunching links...\n"<<std::flush; return;}
       nanosleep((const struct timespec[]){{0, 1250000L}}, NULL);
     }
   }
@@ -265,15 +265,16 @@ struct junction
   std::vector<int> nbrsSection;
   junction* pJunc = nullptr;
   bool unvisited = true;
-  static int junctionID;
+  int junctionID;
   junction();
 };
 
-int junction::junctionID = 0;
+int junctionCounter = 0;
 
 junction::junction()
 {
-  junctionID++;
+  junctionID = junctionCounter;
+  junctionCounter++;
 }
 
 struct pathStorage
@@ -291,9 +292,18 @@ struct pathStorage
   setNodes nodeSet;
   linkerMap linker;
   std::array<std::array<linkerChain, 1984>, 1984> linkerChains;
+  std::array<std::array<int, 1984>, 1984> linkerDistances;
+  std::array<junction, 1984> referenceJunctions;
 };
 
 pathStorage paths;
+
+struct mapInfo
+{
+  std::array<std::vector<int>, 1024> sectionMap;
+};
+
+mapInfo map;
 
 float vectorLength(glm::vec2 a)
 {
@@ -609,6 +619,7 @@ pathStorage::linkerChain getLinkerChain(int startJunction, int endJunction)
 {
   pathStorage::linkerChain chain;
   chain.push_back(&paths.linker[startJunction][endJunction]);
+  paths.linkerDistances[startJunction][endJunction] = paths.linker[startJunction][endJunction].dist;
   bool doneChain = false;
   junction* pJ = paths.linker[startJunction][endJunction].pJunc;
   while (!doneChain)
@@ -621,9 +632,9 @@ pathStorage::linkerChain getLinkerChain(int startJunction, int endJunction)
   return chain;
 }
 
-pathStorage::junctionMap dijkstraLinker(std::array<junction, 1984> referenceJunctions, int sourceJunction)
+pathStorage::junctionMap dijkstraLinker(int sourceJunction)
 {
-  std::array<junction, 1984> junctions = referenceJunctions;
+  std::array<junction, 1984> junctions = paths.referenceJunctions;
   int numUnvisitedJunctions = 1984;
 
   for (size_t i = 0; i < junctions[sourceJunction].nbrs.size(); i++)
@@ -631,6 +642,7 @@ pathStorage::junctionMap dijkstraLinker(std::array<junction, 1984> referenceJunc
     int commonSection = INT_MAX;
     int activeIndexSource = INT_MAX;
     int activeIndexNeighbour = INT_MAX;
+    junctions[sourceJunction].dist = 0.f;
     if (junctions[sourceJunction].sectionA == junctions[sourceJunction].nbrs[i]->sectionA)
     {
       commonSection = junctions[sourceJunction].sectionA;
@@ -661,8 +673,10 @@ pathStorage::junctionMap dijkstraLinker(std::array<junction, 1984> referenceJunc
   while (numUnvisitedJunctions != 0)
   {
     int index = INT_MAX;
+    float minDist = FLT_MAX;
     for (size_t i = 0; i < junctions.size(); i++)
     {
+      minDist = std::min(junctions[i].dist, minDist);
       if (!junctions[i].unvisited) {continue;}
       if (index == INT_MAX)
       {
@@ -675,6 +689,10 @@ pathStorage::junctionMap dijkstraLinker(std::array<junction, 1984> referenceJunc
       }
     }
     junctions[index].unvisited = false;
+    std::cout<<"MINDIST = "<<minDist<<'\n';
+    std::cout<<"INDEX = "<<index<<'\n';
+    std::cout<<"ID = "<<junctions[index].junctionID<<'\n';
+    std::cout<<"FLT_MAX = "<<FLT_MAX<<'\n';
 
     for (size_t i = 0; i < junctions[index].nbrs.size(); i++)
     {
@@ -705,6 +723,12 @@ pathStorage::junctionMap dijkstraLinker(std::array<junction, 1984> referenceJunc
         activeIndexSource = (junctions[index].nodeLocB.x % 8) + (8 * (junctions[index].nodeLocB.y % 8));
         activeIndexNeighbour = (junctions[index].nbrs[i]->nodeLocB.x % 8) + (8 * (junctions[index].nbrs[i]->nodeLocB.y % 8));
       }
+      // std::cout<<"COMMON SECTION = "<<commonSection<<'\n';
+      // std::cout<<"ACTIVE INDEX SOURCE = "<<activeIndexSource<<'\n';
+      // std::cout<<"ACTIVE INDEX NEIGHBOUR = "<<activeIndexNeighbour<<'\n';
+      std::cout<<"juncDist = "<<junctions[index].dist<<'\n';
+      std::cout<<"nodeDist = "<<paths.nodeSet[commonSection][activeIndexSource][activeIndexNeighbour].dist<<'\n';
+      std::cout<<"node ID = "<<junctions[index].nbrs[i]->junctionID<<'\n';
       float alt = junctions[index].dist + paths.nodeSet[commonSection][activeIndexSource][activeIndexNeighbour].dist;
       if (alt < junctions[index].nbrs[i]->dist)
       {
@@ -722,7 +746,6 @@ pathStorage::junctionMap dijkstraLinker(std::array<junction, 1984> referenceJunc
 void generateLinkerMap()
 {
   linkerRunning = true;
-  std::array<junction, 1984> referenceJunctions;
   int junctionCounter = 0;
   for (int j = 0; j < 32; j++)
   {
@@ -737,7 +760,9 @@ void generateLinkerMap()
         junc.nodeLocA = currentSectionCoordsRight;
         junc.nodeLocB = currentSectionCoordsRight;
         junc.nodeLocB.x += 1;
-        referenceJunctions[junctionCounter] = junc;
+        paths.referenceJunctions[junctionCounter] = junc;
+        map.sectionMap[junc.sectionA].push_back(junctionCounter);
+        map.sectionMap[junc.sectionB].push_back(junctionCounter);
         junctionCounter++;
       }
       if (j != 31)
@@ -749,7 +774,7 @@ void generateLinkerMap()
         junc.nodeLocA = currentSectionCoordsTop;
         junc.nodeLocB = currentSectionCoordsTop;
         junc.nodeLocB.y += 1;
-        referenceJunctions[junctionCounter] = junc;
+        paths.referenceJunctions[junctionCounter] = junc;
         junctionCounter++;
       }
     }
@@ -760,17 +785,23 @@ void generateLinkerMap()
     for (int j = 0; j < 1984; j++)
     {
       if (i == j) {continue;}
-      if (referenceJunctions[i].sectionA == referenceJunctions[j].sectionA ||
-          referenceJunctions[i].sectionA == referenceJunctions[j].sectionB ||
-          referenceJunctions[i].sectionB == referenceJunctions[j].sectionA ||
-          referenceJunctions[i].sectionB == referenceJunctions[j].sectionB)
+      if (paths.referenceJunctions[i].sectionA == paths.referenceJunctions[j].sectionA ||
+          paths.referenceJunctions[i].sectionA == paths.referenceJunctions[j].sectionB ||
+          paths.referenceJunctions[i].sectionB == paths.referenceJunctions[j].sectionA ||
+          paths.referenceJunctions[i].sectionB == paths.referenceJunctions[j].sectionB)
           {
-            referenceJunctions[i].nbrs.push_back(&referenceJunctions[j]);
+            bool shouldAdd = true;
+            for (size_t k = 0; k < paths.referenceJunctions[i].nbrs.size(); k++)
+            {
+              if (paths.referenceJunctions[i].nbrs[k]->junctionID == paths.referenceJunctions[j].junctionID) {shouldAdd = false;}
+            }
+            paths.referenceJunctions[i].nbrs.push_back(&paths.referenceJunctions[j]);
           }
     }
   }
 
-  for (size_t i = 0; i < 1984; i++) {paths.linker.push_back(dijkstraLinker(referenceJunctions, i));}
+  for (size_t i = 0; i < 1984; i++) {paths.linker.push_back(dijkstraLinker(i));}
+  linkerDone = true;
   for (size_t i = 0; i < 1984; i++)
   {
     for (size_t j = 0; j < 1984; j++)
@@ -804,7 +835,60 @@ void run(bool printFlag)
   totalJunctions = 1984;
   etaDirty = true;
   generateLinkerMap();
-  linkerDone = true;
+}
+
+void getPath(glm::ivec2 start, glm::ivec2 end)
+{
+  int startSection = (start.y / 32) * 32 + (start.x / 32);
+  int endSection = (end.y / 32) * 32 + (end.x / 32);
+  int shortestDist = INT_MAX;
+  int startJunction = INT_MAX;
+  int endJunction = INT_MAX;
+  std::cout<<"START SECTION = "<<startSection<<'\n';
+  std::cout<<"END SECTION = "<<endSection<<'\n';
+  for (size_t i = 0; i < map.sectionMap[startSection].size(); i++)
+  {
+    int startJuncIndex = map.sectionMap[startSection][i];
+    std::cout<<"START JUNC INDEX = "<<startJuncIndex<<'\n';
+    glm::ivec2 startJuncLoc {INT_MAX, INT_MAX};
+    if (startSection == paths.referenceJunctions[startJuncIndex].sectionA) {startJuncLoc = paths.referenceJunctions[startJuncIndex].nodeLocA;}
+    if (startSection == paths.referenceJunctions[startJuncIndex].sectionB) {startJuncLoc = paths.referenceJunctions[startJuncIndex].nodeLocB;}
+    std::cout<<" startJuncLoc = "<<glm::to_string(startJuncLoc)<<'\n';
+    int distStartJunction = paths.nodeSet[startSection][start.x % 8 + 8 * (start.y % 8)][startJuncLoc.x % 8 + 8 * (startJuncLoc.y % 8)].dist;
+    std::cout<<"distStartJunction = "<<distStartJunction<<'\n';
+    for (size_t j = 0; j < map.sectionMap[endSection].size(); j++)
+    {
+      int endJuncIndex = map.sectionMap[endSection][j];
+      std::cout<<"END JUNC INDEX = "<<endJuncIndex<<'\n';
+      glm::ivec2 endJuncLoc;
+      if (endSection == paths.referenceJunctions[endJuncIndex].sectionA) {endJuncLoc = paths.referenceJunctions[endJuncIndex].nodeLocA;}
+      if (endSection == paths.referenceJunctions[endJuncIndex].sectionB) {endJuncLoc = paths.referenceJunctions[endJuncIndex].nodeLocB;}
+      std::cout<<"endJuncLoc = "<<glm::to_string(endJuncLoc)<<'\n';
+      int distEndJunction = paths.nodeSet[startSection][start.x % 8 + 8 * (start.y % 8)][endJuncLoc.x % 8 + 8 * (endJuncLoc.y % 8)].dist;
+      std::cout<<"distEndJunction = "<<distEndJunction<<'\n';
+      int linkerDist = paths.linkerDistances[startJuncIndex][endJuncIndex];
+      int pathDist = linkerDist + distEndJunction + distStartJunction;
+      std::cout<<"linkerdist = "<<linkerDist<<'\n';
+      std::cout<<" distEndJunction = "<<distEndJunction<<'\n';
+      std::cout<<" distStartJunction = "<<distStartJunction<<'\n';
+      std::cout<<" pathDist = "<<pathDist<<'\n';
+      shortestDist = std::min(shortestDist, pathDist);
+      if (shortestDist == paths.linkerDistances[startJuncIndex][endJuncIndex]) {startJunction = i; endJunction = j;}
+    }
+  }
+  std::cout<<"PATH FROM "<<glm::to_string(start)<<" to "<<glm::to_string(end)<<":\n";
+  std::cout<<"\tdistance = "<<shortestDist<<'\n';
+  std::cout<<map.sectionMap[startSection].size()<<'\n';
+  std::cout<<map.sectionMap[endSection].size()<<'\n';
+  std::cout<<"end junction = "<<endJunction<<'\n';
+  std::cout<<"start junction = "<<startJunction<<'\n';
+  std::cout<<"\tVIA JUNCTIONS:\n";
+  std::cout<<"There should be a number here ->"<<paths.linkerChains[startJunction][endJunction].size()<<'\n';
+  for (size_t i = 0; i < paths.linkerChains[startJunction][endJunction].size(); i++)
+  {
+    std::cout<<"help\n";
+    std::cout<<'\t'<<paths.linkerChains[startJunction][endJunction][i]->junctionID<<'\n';
+  }
 }
 
 int main(int argc, char **argv)
@@ -819,4 +903,5 @@ int main(int argc, char **argv)
   auto t2 = std::chrono::high_resolution_clock::now();
   float delta = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
   std::cout<<std::setprecision(10)<<"Time taken: "<<delta / 1000.f<<'\n';
+  getPath({201, 123},{145, 46});
 }
