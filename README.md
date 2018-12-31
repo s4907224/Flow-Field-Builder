@@ -1,5 +1,5 @@
+#Flow Field Generator
 
-**Flow Field Generator**
 This program generates a set of flow fields from a given map image.
 A python script translates the image into a readable format for the main C++ program, which then divides the 256*256 map into 1024 8 * 8 sections.
 
