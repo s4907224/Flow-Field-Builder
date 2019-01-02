@@ -24,8 +24,6 @@ int junctionsDone = 0;
 int totalJunctions = 0;
 bool etaDirty = false;
 enum directionEnum {d0 = 9, dN = 1, dNE = 2, dE = 3, dSE = 4, dS = 5, dSW = 6, dW = 7, dNW = 8, dNone = 0, dNoRoute = 10};
-int failedRoutes = 0;
-
 
 void spinDijkstra()
 {
@@ -264,7 +262,7 @@ struct junction
   float dist = FLT_MAX;
   std::vector<int> nbrs;
   std::vector<int> nbrsSection;
-  junction* pJunc = nullptr;
+  int pJunc = INT_MAX;
   bool unvisited = true;
   int junctionID;
   junction();
@@ -293,11 +291,19 @@ struct pathStorage
   setNodes nodeSet;
   linkerMap linker;
   std::array<std::array<linkerChain, 1984>, 1984> linkerChains;
-  std::array<std::array<int, 1984>, 1984> linkerDistances;
-  std::array<junction, 1984> referenceJunctions;
+  std::array<std::array<std::vector<int>, 1984>, 1984> linkerSectionChain;
+  //std::array<std::array<int, 1984>, 1984> linkerDistances; 
+  std::array<junction, 1984> referenceJunctions; //NEEDED
 };
 
 pathStorage paths;
+
+struct path
+{
+  std::vector<std::array<int, 2>> junction;
+  std::vector<int> sections;
+  glm::ivec2 destination;
+};
 
 struct mapInfo
 {
@@ -616,21 +622,31 @@ void printFlows()
   }
 }
 
-pathStorage::linkerChain getLinkerChain(int startJunction, int endJunction)
+void getLinkerChain(int startJunction, int endJunction)
 {
   pathStorage::linkerChain chain;
+  std::vector<int> sections;
   chain.push_back(&paths.linker[startJunction][endJunction]);
-  paths.linkerDistances[startJunction][endJunction] = paths.linker[startJunction][endJunction].dist;
+  //paths.linkerDistances[startJunction][endJunction] = paths.linker[startJunction][endJunction].dist;
   bool doneChain = false;
-  junction* pJ = paths.linker[startJunction][endJunction].pJunc;
+  int pJIndex = paths.linker[startJunction][endJunction].pJunc;
   while (!doneChain)
   {
-    if (pJ == nullptr) {doneChain = true; break;}
-    chain.push_back(pJ);
-    pJ = pJ->pJunc;
+    if (pJIndex == INT_MAX) {doneChain = true; break;}
+    chain.push_back(&paths.linker[startJunction][pJIndex]);
+    pJIndex = paths.linker[startJunction][pJIndex].pJunc;
   }
   chain.push_back(&paths.linker[startJunction][startJunction]);
-  return chain;
+  for (size_t i = 0; i < chain.size() - 1; i++)
+  {
+    int commonSection = INT_MAX;
+    if (chain[i]->sectionA == chain[i + 1]->sectionA) {sections.push_back(chain[i]->sectionA); continue;}
+    if (chain[i]->sectionA == chain[i + 1]->sectionB) {sections.push_back(chain[i]->sectionA); continue;}
+    if (chain[i]->sectionB == chain[i + 1]->sectionA) {sections.push_back(chain[i]->sectionB); continue;}
+    if (chain[i]->sectionB == chain[i + 1]->sectionB) {sections.push_back(chain[i]->sectionB); continue;}
+  }
+  paths.linkerSectionChain[startJunction][endJunction] = sections;
+  paths.linkerChains[startJunction][endJunction] = chain;
 }
 
 pathStorage::junctionMap dijkstraLinker(int sourceJunction)
@@ -724,7 +740,7 @@ pathStorage::junctionMap dijkstraLinker(int sourceJunction)
       if (alt < junctions[junctions[index].nbrs[i]].dist)
       {
         junctions[junctions[index].nbrs[i]].dist = alt;
-        junctions[junctions[index].nbrs[i]].pJunc = &junctions[index];
+        junctions[junctions[index].nbrs[i]].pJunc = index;
       }
     }
     numUnvisitedJunctions--;
@@ -772,7 +788,6 @@ void generateLinkerMap()
       }
     }
   }
-
   for (int i = 0; i < 1984; i++)
   {
     for (int j = 0; j < 1984; j++)
@@ -792,18 +807,6 @@ void generateLinkerMap()
           }
     }
   }
-
-  // std::cout<<"referenceJunctions[0].dist                ="<<paths.referenceJunctions[0].dist<<'\n';
-  // std::cout<<"referenceJunctions[0].junctionID          ="<<paths.referenceJunctions[0].junctionID<<'\n';
-  // paths.referenceJunctions[0].dist = 99;
-  // std::cout<<"referenceJunctions[0].dist                ="<<paths.referenceJunctions[0].dist<<'\n';
-  // std::cout<<"referenceJunctions[0].nbrs[0]->dist       ="<<paths.referenceJunctions[0].nbrs[0]->dist<<'\n';
-  // std::cout<<"referenceJunctions[0].nbrs[0]->junctionID ="<<paths.referenceJunctions[0].nbrs[0]->junctionID<<'\n';
-  // paths.referenceJunctions[0].nbrs[0]->dist = 97;
-  // std::cout<<"referenceJunctions[0].nbrs[0]->dist       ="<<paths.referenceJunctions[0].nbrs[0]->dist<<'\n';
-  // std::cout<<"referenceJunctions[1].dist                ="<<paths.referenceJunctions[1].dist<<'\n';
-  // std::cout<<"referenceJunctions[1].junctionID          ="<<paths.referenceJunctions[1].junctionID<<'\n';
-
   for (size_t i = 0; i < 1984; i++) {paths.linker.push_back(dijkstraLinker(i));}
   linkerDone = true;
   for (size_t i = 0; i < 1984; i++)
@@ -811,7 +814,7 @@ void generateLinkerMap()
     for (size_t j = 0; j < 1984; j++)
     {
       if (i == j) {continue;}
-      paths.linkerChains[i][j] = getLinkerChain(i, j);
+      getLinkerChain(i, j);
     }
   }
 }
@@ -841,22 +844,19 @@ void run(bool printFlag)
   generateLinkerMap();
 }
 
+int convertVec2ToIndex(glm::ivec2 vec)
+{
+  return (vec.x % 8) + (8 * (vec.y % 8));
+}
+
 void getPath(glm::ivec2 sourceGlobal, glm::ivec2 destinGlobal)
 {
   glm::ivec2 sourceLocal {sourceGlobal.x % 8, sourceGlobal.y % 8};
   glm::ivec2 destinLocal {destinGlobal.x % 8, destinGlobal.y % 8};
-  // std::cout<<"sourceLocal"<<glm::to_string(sourceLocal)<<'\n';
-  // std::cout<<"destinLocal"<<glm::to_string(destinLocal)<<'\n';
-  auto t1 = std::chrono::high_resolution_clock::now();
   int sourceSection = sourceGlobal.x / 8 + ((sourceGlobal.y / 8) * 32);
   int destinSection = destinGlobal.x / 8 + ((destinGlobal.y / 8) * 32);
-  // std::cout<<"sourceSection"<<sourceSection<<'\n';
-  // std::cout<<"destinSection"<<destinSection<<'\n';
   int sourceIndex = sourceLocal.x + sourceLocal.y * 8;
   int destinIndex = destinLocal.x + destinLocal.y * 8;
-  // std::cout<<"sourceIndex"<<sourceIndex<<'\n';
-  // std::cout<<"destinIndex"<<destinIndex<<'\n';
-
   float shortestDist = FLT_MAX;
   int selectedSource = INT_MAX;
   int selectedDestin = INT_MAX;
@@ -864,33 +864,19 @@ void getPath(glm::ivec2 sourceGlobal, glm::ivec2 destinGlobal)
   for (size_t i = 0; i < map.sectionMap[sourceSection].size(); i++)
   {
     int sourceJunction = map.sectionMap[sourceSection][i];
-    // std::cout<<"sourceJunction = "<<sourceJunction<<'\n';
-    if (sourceJunction < 0 || sourceJunction > 1983) {failed = true; continue;}
     glm::ivec2 sourceJunctionCoord;
-    // std::cout<<"paths.referenceJunctions[sourceJunction].sectionA = "<<paths.referenceJunctions[sourceJunction].sectionA<<'\n';
-    // std::cout<<"paths.referenceJunctions[sourceJunction].sectionB = "<<paths.referenceJunctions[sourceJunction].sectionB<<'\n';
     if (sourceSection == paths.referenceJunctions[sourceJunction].sectionA) {sourceJunctionCoord = paths.referenceJunctions[sourceJunction].nodeLocA;}
     if (sourceSection == paths.referenceJunctions[sourceJunction].sectionB) {sourceJunctionCoord = paths.referenceJunctions[sourceJunction].nodeLocB;}
-    // std::cout<<"sourceJunctionCoord = "<<glm::to_string(sourceJunctionCoord)<<'\n';
-    float distSourceJunction = paths.nodeSet[sourceSection][sourceIndex][sourceJunctionCoord.x % 8 + 8 * (sourceJunctionCoord.y % 8)].dist;
-    // std::cout<<"distSourceJunction = "<<distSourceJunction<<'\n';
+    float distSourceJunction = paths.nodeSet[sourceSection][sourceIndex][convertVec2ToIndex(sourceJunctionCoord)].dist;
     for (size_t j = 0; j < map.sectionMap[destinSection].size(); j++)
     {
       int destinJunction = map.sectionMap[destinSection][j];
-      // std::cout<<"destinJunction = "<<destinJunction<<'\n';
-      if (destinJunction < 0 || destinJunction > 1983) {failed = true; continue;}
       glm::ivec2 destinJunctionCoord;
       if (destinSection == paths.referenceJunctions[destinJunction].sectionA) {destinJunctionCoord = paths.referenceJunctions[destinJunction].nodeLocA;}
       if (destinSection == paths.referenceJunctions[destinJunction].sectionB) {destinJunctionCoord = paths.referenceJunctions[destinJunction].nodeLocB;}
-      // std::cout<<"paths.referenceJunctions[destinJunction].sectionA = "<<paths.referenceJunctions[destinJunction].sectionA<<'\n';
-      // std::cout<<"paths.referenceJunctions[destinJunction].sectionB = "<<paths.referenceJunctions[destinJunction].sectionB<<'\n';
-      // std::cout<<"destinJunctionCoord = "<<glm::to_string(destinJunctionCoord)<<'\n';
-      float distDestinJunction = paths.nodeSet[destinSection][destinIndex][destinJunctionCoord.x % 8 + 8 * (destinJunctionCoord.y % 8)].dist;
-      // std::cout<<"distDestinJunction = "<<distDestinJunction<<'\n';
+      float distDestinJunction = paths.nodeSet[destinSection][destinIndex][convertVec2ToIndex(destinJunctionCoord)].dist;
       float juncDist = paths.linker[sourceJunction][destinJunction].dist;
-      // std::cout<<"juncDist = "<<juncDist<<'\n';
       float totalDist = juncDist + distSourceJunction + distDestinJunction;
-      // std::cout<<"totalDist = "<<totalDist<<'\n';
       if (totalDist < shortestDist)
       {
         shortestDist = totalDist;
@@ -899,11 +885,33 @@ void getPath(glm::ivec2 sourceGlobal, glm::ivec2 destinGlobal)
       }
     }
   }
-  if (failed) {failedRoutes++;}
-  auto t2 = std::chrono::high_resolution_clock::now();
-  float delta = float(std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());
-  // std::cout<<std::setprecision(30)<<"Time to get distance : "<<delta<<" nanoseconds\n";
-  // std::cout<<"Shortest dist = "<<shortestDist<<'\n';
+
+  path returnPath;
+  bool nextStartIsSecA;
+  junction* endJunction = paths.linkerChains[selectedSource][selectedDestin][0];
+  std::array<int, 2> cIndexPair;
+  if (endJunction->sectionA == sourceSection) {cIndexPair[0] = convertVec2ToIndex(endJunction->nodeLocA);}
+  else if (endJunction->sectionB == sourceSection) {cIndexPair[0] = convertVec2ToIndex(endJunction->nodeLocB);}
+  cIndexPair[1] = destinIndex;
+  returnPath.sections.push_back(destinSection);
+  returnPath.junction.push_back(cIndexPair);
+  for (size_t i = 0; i < paths.linkerSectionChain[selectedSource][selectedDestin].size(); i++)
+  {
+    junction* sJ = paths.linkerChains[selectedSource][selectedDestin][i];
+    junction* eJ = paths.linkerChains[selectedSource][selectedDestin][i + 1];
+    if (paths.linkerSectionChain[selectedSource][selectedDestin][i]== sJ->sectionA) {cIndexPair[0] = convertVec2ToIndex(sJ->nodeLocA);}
+    if (paths.linkerSectionChain[selectedSource][selectedDestin][i]== sJ->sectionB) {cIndexPair[0] = convertVec2ToIndex(sJ->nodeLocB);}
+    if (paths.linkerSectionChain[selectedSource][selectedDestin][i]== eJ->sectionA) {cIndexPair[1] = convertVec2ToIndex(eJ->nodeLocA);}
+    if (paths.linkerSectionChain[selectedSource][selectedDestin][i]== eJ->sectionB) {cIndexPair[1] = convertVec2ToIndex(eJ->nodeLocB);}
+    returnPath.junction.push_back(cIndexPair);
+    returnPath.sections.push_back(paths.linkerSectionChain[selectedSource][selectedDestin][i]);
+  }
+  returnPath.sections.push_back(sourceSection);
+  junction* startJunction = paths.linkerChains[selectedSource][selectedDestin].back();
+  if (startJunction->sectionA == sourceSection) {cIndexPair[1] = convertVec2ToIndex(startJunction->nodeLocA);}
+  if (startJunction->sectionB == sourceSection) {cIndexPair[1] = convertVec2ToIndex(startJunction->nodeLocB);}
+  cIndexPair[0] = sourceIndex;
+  returnPath.junction.push_back(cIndexPair);
 }
 
 int main(int argc, char **argv)
@@ -919,20 +927,18 @@ int main(int argc, char **argv)
   auto t2 = std::chrono::high_resolution_clock::now();
   float delta = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
   std::cout<<std::setprecision(10)<<"Time taken: "<<delta / 1000.f<<'\n';
-
   t1 = std::chrono::high_resolution_clock::now();
   for (int i = 1; i < 2; i++)
   {
-    for (int j = 1; j < 256; j++)
+    for (int j = 1; j < 255; j++)
     {
-      for (int x = 1; x < 256; x++)
+      for (int x = 1; x < 255; x++)
       {
-        for (int y = 1; y < 256; y++)
+        for (int y = 1; y < 255; y++)
         {
           if (x == i && y == j) {continue;}
           glm::ivec2 start {i, j};
           glm::ivec2 dest {x, y};
-          //std::cout<<"calulating path from "<<glm::to_string(start)<<" to "<<glm::to_string(dest)<<'\n';
           getPath(start, dest);
         }
       }
@@ -941,5 +947,6 @@ int main(int argc, char **argv)
   t2 = std::chrono::high_resolution_clock::now();
   delta = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
   std::cout<<std::setprecision(10)<<"Time taken: "<<delta / 1000.f<<'\n';
-  std::cout<<failedRoutes<<" out of "<<1 * 255 * 255 * 255<<"( "<<(float(failedRoutes)/float(1 * 255 * 255 * 255)) * 100.f<<"%) routes failed\n";
+  long totalRoutes = long(1 * 254) * long(254 * 254);
+  std::cout<<tempCount<<" out of "<<totalRoutes<<'\n';
 }
