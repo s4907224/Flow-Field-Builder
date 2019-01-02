@@ -287,22 +287,20 @@ struct pathStorage
   typedef std::vector<junction*> linkerChain;
   singleFlow currentFlow;
   sectionFlow currentSectionFlow;
-  allFlow allFlows;
+  allFlow allFlows; 
   setNodes nodeSet;
   linkerMap linker;
   std::array<std::array<linkerChain, 1984>, 1984> linkerChains;
   std::array<std::array<std::vector<int>, 1984>, 1984> linkerSectionChain;
-  //std::array<std::array<int, 1984>, 1984> linkerDistances; 
-  std::array<junction, 1984> referenceJunctions; //NEEDED
+  std::array<junction, 1984> referenceJunctions;
 };
 
 pathStorage paths;
 
 struct path
 {
-  std::vector<std::array<int, 2>> junction;
+  std::vector<std::array<int, 2>> pairs;
   std::vector<int> sections;
-  glm::ivec2 destination;
 };
 
 struct mapInfo
@@ -627,7 +625,6 @@ void getLinkerChain(int startJunction, int endJunction)
   pathStorage::linkerChain chain;
   std::vector<int> sections;
   chain.push_back(&paths.linker[startJunction][endJunction]);
-  //paths.linkerDistances[startJunction][endJunction] = paths.linker[startJunction][endJunction].dist;
   bool doneChain = false;
   int pJIndex = paths.linker[startJunction][endJunction].pJunc;
   while (!doneChain)
@@ -813,7 +810,7 @@ void generateLinkerMap()
   {
     for (size_t j = 0; j < 1984; j++)
     {
-      if (i == j) {continue;}
+      //if (i == j) {continue;}
       getLinkerChain(i, j);
     }
   }
@@ -849,7 +846,7 @@ int convertVec2ToIndex(glm::ivec2 vec)
   return (vec.x % 8) + (8 * (vec.y % 8));
 }
 
-void getPath(glm::ivec2 sourceGlobal, glm::ivec2 destinGlobal)
+path getPath(glm::ivec2 sourceGlobal, glm::ivec2 destinGlobal)
 {
   glm::ivec2 sourceLocal {sourceGlobal.x % 8, sourceGlobal.y % 8};
   glm::ivec2 destinLocal {destinGlobal.x % 8, destinGlobal.y % 8};
@@ -857,6 +854,15 @@ void getPath(glm::ivec2 sourceGlobal, glm::ivec2 destinGlobal)
   int destinSection = destinGlobal.x / 8 + ((destinGlobal.y / 8) * 32);
   int sourceIndex = sourceLocal.x + sourceLocal.y * 8;
   int destinIndex = destinLocal.x + destinLocal.y * 8;
+
+  if (sourceSection == destinSection)
+  {
+    path returnPath;
+    returnPath.pairs.push_back({sourceIndex, destinIndex});
+    returnPath.sections.push_back(sourceSection);
+    return returnPath;
+  }
+
   float shortestDist = FLT_MAX;
   int selectedSource = INT_MAX;
   int selectedDestin = INT_MAX;
@@ -890,11 +896,11 @@ void getPath(glm::ivec2 sourceGlobal, glm::ivec2 destinGlobal)
   bool nextStartIsSecA;
   junction* endJunction = paths.linkerChains[selectedSource][selectedDestin][0];
   std::array<int, 2> cIndexPair;
-  if (endJunction->sectionA == sourceSection) {cIndexPair[0] = convertVec2ToIndex(endJunction->nodeLocA);}
-  else if (endJunction->sectionB == sourceSection) {cIndexPair[0] = convertVec2ToIndex(endJunction->nodeLocB);}
+  if (endJunction->sectionA == destinSection) {cIndexPair[0] = convertVec2ToIndex(endJunction->nodeLocA);}
+  else if (endJunction->sectionB == destinSection) {cIndexPair[0] = convertVec2ToIndex(endJunction->nodeLocB);}
   cIndexPair[1] = destinIndex;
   returnPath.sections.push_back(destinSection);
-  returnPath.junction.push_back(cIndexPair);
+  returnPath.pairs.push_back(cIndexPair);
   for (size_t i = 0; i < paths.linkerSectionChain[selectedSource][selectedDestin].size(); i++)
   {
     junction* sJ = paths.linkerChains[selectedSource][selectedDestin][i];
@@ -903,7 +909,7 @@ void getPath(glm::ivec2 sourceGlobal, glm::ivec2 destinGlobal)
     if (paths.linkerSectionChain[selectedSource][selectedDestin][i]== sJ->sectionB) {cIndexPair[0] = convertVec2ToIndex(sJ->nodeLocB);}
     if (paths.linkerSectionChain[selectedSource][selectedDestin][i]== eJ->sectionA) {cIndexPair[1] = convertVec2ToIndex(eJ->nodeLocA);}
     if (paths.linkerSectionChain[selectedSource][selectedDestin][i]== eJ->sectionB) {cIndexPair[1] = convertVec2ToIndex(eJ->nodeLocB);}
-    returnPath.junction.push_back(cIndexPair);
+    returnPath.pairs.push_back(cIndexPair);
     returnPath.sections.push_back(paths.linkerSectionChain[selectedSource][selectedDestin][i]);
   }
   returnPath.sections.push_back(sourceSection);
@@ -911,7 +917,8 @@ void getPath(glm::ivec2 sourceGlobal, glm::ivec2 destinGlobal)
   if (startJunction->sectionA == sourceSection) {cIndexPair[1] = convertVec2ToIndex(startJunction->nodeLocA);}
   if (startJunction->sectionB == sourceSection) {cIndexPair[1] = convertVec2ToIndex(startJunction->nodeLocB);}
   cIndexPair[0] = sourceIndex;
-  returnPath.junction.push_back(cIndexPair);
+  returnPath.pairs.push_back(cIndexPair);
+  return returnPath;
 }
 
 int main(int argc, char **argv)
@@ -939,7 +946,7 @@ int main(int argc, char **argv)
           if (x == i && y == j) {continue;}
           glm::ivec2 start {i, j};
           glm::ivec2 dest {x, y};
-          getPath(start, dest);
+          path temp = getPath(start, dest);
         }
       }
     }
@@ -947,6 +954,4 @@ int main(int argc, char **argv)
   t2 = std::chrono::high_resolution_clock::now();
   delta = float(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
   std::cout<<std::setprecision(10)<<"Time taken: "<<delta / 1000.f<<'\n';
-  long totalRoutes = long(1 * 254) * long(254 * 254);
-  std::cout<<tempCount<<" out of "<<totalRoutes<<'\n';
 }
